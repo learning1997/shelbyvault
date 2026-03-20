@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { Network } from '@aptos-labs/ts-sdk'
+import { Network, Aptos, AptosConfig } from '@aptos-labs/ts-sdk'
 
 // ─────────────────────────────────────────────────────────────
 //  useShelby — upload, list blobs, download
@@ -56,9 +56,6 @@ export async function fetchBlobsForAccount(account, activeNet) {
 
   // 3. ULTIMATE BULLETPROOF FALLBACK: Mine from Aptos Network Transactions directly!
   try {
-    const [{ Aptos, AptosConfig, Network }] = await Promise.all([
-      import('@aptos-labs/ts-sdk')
-    ])
     const aptosNetwork = isShelbyNet ? 'shelbynet' : Network.TESTNET
     const aptosClient = new Aptos(new AptosConfig({ network: aptosNetwork }))
     
@@ -131,11 +128,10 @@ export function useShelby({ address, apiKey, signAndSubmit, network }) {
     ])
 
     try {
-      // Lazy-load SDK (avoid bundling issues with WASM)
-      const [{ ShelbyClient, generateCommitments, createDefaultErasureCodingProvider, expectedTotalChunksets, ShelbyBlobClient }, { Aptos, AptosConfig, Network }] =
+      // Lazy-load WASM SDK safely, but statically resolve Aptos
+      const [{ ShelbyClient, generateCommitments, createDefaultErasureCodingProvider, expectedTotalChunksets, ShelbyBlobClient }] =
         await Promise.all([
-          import('@shelby-protocol/sdk/browser'),
-          import('@aptos-labs/ts-sdk'),
+          import('@shelby-protocol/sdk/browser')
         ])
 
       const aptosNetwork = activeNet === 'shelbynet' ? 'shelbynet' : Network.TESTNET
