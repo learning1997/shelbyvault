@@ -1,0 +1,1 @@
+import { ShelbyBlobClient } from '@shelby-protocol/sdk'; import { Network } from '@aptos-labs/ts-sdk'; const client = new ShelbyBlobClient({ aptos: { network: Network.TESTNET } }); client.getAccountBlobs({ account: '0xe5d02fa729c1fb4adff54e995eddb76ea3afbb6ba8b98eec8ca6612d7b88df0d' }).then(b => console.log('Blobs:', b)).catch(console.error);
