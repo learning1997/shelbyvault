@@ -15,6 +15,7 @@ import FilesPanel   from './components/FilesPanel'
 import BrowsePanel  from './components/BrowsePanel'
 import ConfigPanel  from './components/ConfigPanel'
 import Toast        from './components/Toast'
+import LandingPage  from './components/LandingPage'
 
 const TABS = [
   { id: 'upload', label: '⬆ Upload' },
@@ -25,6 +26,7 @@ const TABS = [
 
 export default function App() {
   const [tab,    setTab]    = useState('upload')
+  const [showLanding, setShowLanding] = useState(true)
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('sv_api_key') || '')
 
   const { toast, show: showToast } = useToast()
@@ -100,12 +102,16 @@ export default function App() {
   const totalBytes = blobs.reduce((a, b) => a + (b.size_bytes || b.size || 0), 0)
   const activeNet = network?.name?.toLowerCase() === 'shelbynet' ? 'shelbynet' : 'testnet'
 
+  if (showLanding) {
+    return <LandingPage onEnter={() => setShowLanding(false)} />
+  }
+
   return (
     <>
       <div className="bg-grid" />
       <div className="bg-glow" />
 
-      <div className="app">
+      <div className="app app-enter">
         <Header
           address={address}
           activeWallet={activeWallet}
